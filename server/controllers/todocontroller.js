@@ -4,6 +4,21 @@ const jwt = require('jsonwebtoken');
 require('dotenv').config()
 
 
+exports.listtag = (req, res, next) => {
+  var token = req.headers.token
+  var decode = jwt.verify(token, process.env.SECRET)
+  tag.tagModel.find({
+      users: decode.id
+    })
+    .populate('todos users')
+    .populate({path: 'todos', populate: {path: 'user'}})
+    .then(data => {
+      res.send(data)
+    })
+    .catch(err => {
+      res.send(err)
+    })
+}
 
 exports.listtodo = (req, res, next) => {
   var token = req.headers.token
@@ -24,10 +39,11 @@ exports.addtag = (req, res, next) => {
   var token = req.headers.token
   var decode = jwt.verify(token, process.env.SECRET)
   tag.tagModel.create({
-    title: req.body.title,
-    created_at: new Date(),
-    user: decode.id
-  })
+      users: decode.id,
+      title: req.body.title,
+      created_at: new Date(),
+      todos: req.body.todos
+    })
     .then(data => {
       res.send({
         'data': data,
@@ -59,10 +75,27 @@ exports.addtodo = (req, res, next) => {
     })
 }
 
-exports.updatetag = (req, res, next) => {
+exports.addtodototag = (req, res, next) => {
   tag.tagModel.updateOne({
     _id: req.body.id
   }, {
+      $push: { todos: req.body.todos }
+    })
+    .then(data => {
+      res.send({
+        'data': data,
+        'message': 'data updated'
+      })
+    })
+    .catch(err => {
+      res.send(err)
+    })
+}
+
+exports.updatetag = (req, res, next) => {
+  tag.tagModel.updateOne({
+      _id: req.params.id
+    }, {
       title: req.body.title
     })
     .then(data => {
@@ -70,6 +103,9 @@ exports.updatetag = (req, res, next) => {
         'data': data,
         'message': 'data updated'
       })
+    })
+    .catch(err => {
+      res.send(err)
     })
 }
 
@@ -87,10 +123,24 @@ exports.updatetodo = (req, res, next) => {
     })
 }
 
+exports.done = (req, res, next) => {
+  todos.listModel.updateOne({
+    _id: req.body.id
+  }, {
+      status: req.body.status
+    })
+    .then(data => {
+      res.send({
+        'data': data,
+        'message': 'data updated'
+      })
+    })
+}
+
 exports.deletetag = (req, res) => {
   tag.tagModel.deleteOne({
-    _id: req.params.id
-  })
+      _id: req.params.id
+    })
     .then(data => {
       res.send({
         'data': data,

@@ -51,23 +51,32 @@
         </div>
       </div>
       <div class="profile">
-        <div class="demo-card-wide mdl-card mdl-shadow--2dp">
+        <div class="demo-card-wide mdl-card mdl-shadow--2dp" v-for="(data, idx) in todolists">
           <div class="mdl-card__title mdl-card--border">
-            <h2 class="mdl-card__title-text">Inbox</h2>
+            <h2 class="mdl-card__title-text">{{data.title}}</h2>
           </div>
-          <div class="mdl-card__supporting-text">
-            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="checkbox-3">
-            <input type="checkbox" id="checkbox-3" class="mdl-checkbox__input">
-            <span class="mdl-checkbox__label md-black" style="color: black">TestNyet</span>
+          <div class="mdl-card__supporting-text" v-for="(todo, index) in data.todos">
+            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" v-bind:for="index">
+            <input type="checkbox" v-bind:id="index" class="mdl-checkbox__input" v-model="todo.status">
+            <span class="mdl-checkbox__label md-black" style="color: black; font-size: 25px">{{todo.title}}</span>
+
+            <span class="mdl-checkbox__label md-black" style="color: black; font-size: 10px">Created by {{todo.user.fullname}}</span>
           </label>
           </div>
-          <div class="mdl-card__actions mdl-card--border">
+          <div class="mdl-card__actions mdl-card--border" v-for="(user, iduser) in data.users">
             <!-- <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Get Started</a> -->
             <strong>
-              Contributor : 
+              Contributor : <!-- Contact Chip -->
+              <span class="mdl-chip mdl-chip--contact">
+              <span class="mdl-chip__contact mdl-color--teal mdl-color-text--white">{{user.fullname[0]}}</span>
+              <span class="mdl-chip__text">{{user.fullname}}</span>
+              </span>
+
             </strong>
           </div>
           <div class="mdl-card__menu">
+            <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect"><i class="material-icons md-dark">add</i></button>
+            <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect"><i class="material-icons md-dark">delete</i></button>
             <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect"><i class="material-icons md-dark">share</i></button>
           </div>
         </div>
@@ -79,4 +88,5 @@
   </div>
 </body>
 <script src="./assets/index.js"></script>
+
 </html>

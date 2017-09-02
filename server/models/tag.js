@@ -4,11 +4,15 @@ var mongoose = require('mongoose')
 mongoose.connect('mongodb://localhost:27017/to-do');
 
 var tagSchema = mongoose.Schema({
-  title: String,
-  created_at: Date,
-  user: [{
+  users: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'user'
+  }],
+  title: String,
+  created_at: Date,
+  todos: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'list'
   }]
 })
 
