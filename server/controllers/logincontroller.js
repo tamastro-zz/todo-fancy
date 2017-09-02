@@ -27,7 +27,8 @@ exports.signin = (req, res) => {
                 jwt.sign({
                     username: data.username,
                     fullname: data.fullname,
-                    email: data.email
+                    email: data.email,
+                    id: data._id
                 }, process.env.SECRET, (err, token) => {
                     if (err) console.log(err)
                     res.send(token)
@@ -37,4 +38,11 @@ exports.signin = (req, res) => {
             }
         })
         .catch(err => res.send('nousername'))
+}
+
+exports.getuser = (req, res) => {
+    users.userModel.find({})
+    .then(data => {
+        res.send(data)
+    })
 }

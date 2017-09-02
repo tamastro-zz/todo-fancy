@@ -11,6 +11,7 @@ const express = require('express'),
       routes = require('./routes/index'),
       users = require('./routes/users'),
       login = require('./routes/login'),
+      todo = require('./routes/todo'),
 
       //Express Instance
       app = express();
@@ -26,6 +27,7 @@ app.use(cors());
 
 app.use('/', login);
 app.use('/users', users);
+app.use('/todo', todo);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
