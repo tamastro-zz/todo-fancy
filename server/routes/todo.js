@@ -25,7 +25,7 @@ router.patch('/tag/:id', auth.auth, controller.updatetag);
 
 router.delete('/tag/:id', auth.auth, controller.deletetag);
 
-router.patch('/addtodo', auth.auth, controller.addtodototag);
+router.patch('/addtodo/:id', auth.auth, controller.addtodototag);
 
 
 

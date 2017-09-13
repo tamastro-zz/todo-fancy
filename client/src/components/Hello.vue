@@ -21,9 +21,9 @@
             <md-input-container>
               <md-icon>add</md-icon>
               <label>Add Tag...</label>
-              <md-input></md-input>
+              <md-input v-model="tag"></md-input>
             </md-input-container>
-            <md-button class="md-dense md-primary">
+            <md-button class="md-dense md-primary" @click="addtag">
               add Tag
             </md-button>
           </md-list-item>
@@ -34,7 +34,7 @@
 
           <md-list-item>
             <md-icon>exit_to_app</md-icon>
-            <md-button class="md-warn md-raised">
+            <md-button class="md-warn md-raised" @click="logout">
               Log Out
             </md-button>
           </md-list-item>
@@ -43,18 +43,16 @@
     </div>
 
     <div class="phone-viewport">
-      <md-whiteframe md-elevation="5dp" md-align="center" md-gutter="40">
-        <md-list class="custom-list md-triple-line" v-for="tag in tags" :key="tag._id" v-if="tag.users.findIndex(tagUser => tagUser._id == user.id) !== -1">
+      <md-list class="custom-list md-triple-line" v-for="tag in tags" :key="tag._id" v-if="tag.users.findIndex(tagUser => tagUser._id == user.id) !== -1">
+        <md-whiteframe md-elevation="5dp" md-align="center" md-gutter="40">
 
-          <md-list-item>
+          <md-list-item style="background-color: grey">
 
 
-            <md-button class="md-icon-button md-primary">
-              <md-icon>add</md-icon>
-            </md-button>
+            <md-icon>group_work</md-icon>
 
             <md-header class="md-headline">{{tag.title}}</md-header>
-            <md-button class="md-icon-button md-warn">
+            <md-button class="md-icon-button md-warn" @click="deletetag(tag._id)">
               <md-icon>delete</md-icon>
             </md-button>
           </md-list-item>
@@ -71,7 +69,7 @@
               <span>{{todo.user.fullname}}</span>
             </div>
 
-            <md-button class="md-icon-button md-list-action">
+            <md-button class="md-icon-button md-list-action" @click="deletetodo(todo._id)">
               <md-icon class="md-warn">delete</md-icon>
             </md-button>
 
@@ -83,13 +81,13 @@
             <md-input-container>
               <md-icon>add</md-icon>
               <label>Add Todo...</label>
-              <md-input></md-input>
+              <md-input v-model="todo"></md-input>
             </md-input-container>
-            <md-button class="md-dense md-primary md-raised">
+            <md-button class="md-dense md-primary md-raised" @click="addtodo(tag._id)">
               add
             </md-button>
           </md-list-item>
-          
+
           <md-subheader>
             <md-button class="md-icon-button md-primary">
               <md-icon>add</md-icon>
@@ -97,8 +95,9 @@
             <md-chip v-for="contributor in tag.users" :key="contributor._id">{{contributor.fullname}}</md-chip>
           </md-subheader>
           <md-divider></md-divider>
-        </md-list>
-      </md-whiteframe>
+        </md-whiteframe>
+        <br>
+      </md-list>
     </div>
   </div>
 </template>
@@ -110,7 +109,9 @@
     data() {
       return {
         tags: [],
-        user: []
+        user: [],
+        tag: '',
+        todo: ''
       }
     },
     methods: {
@@ -129,6 +130,56 @@
         var decode = jwtdecode(tokenid)
         this.user = decode
       },
+      addtag() {
+        this.$http.post('/todo/tag', {
+            title: this.tag
+          }, {
+            headers: {
+              token: window.localStorage.getItem('token')
+            }
+          })
+          .then(data => {
+            this.tag = ''
+            this.gettodo()
+          })
+      },
+      addtodo(idtag) {
+        this.$http.patch(`/todo/addtodo/${idtag}`, {
+            title: this.todo
+          }, {
+            headers: {
+              token: window.localStorage.getItem('token')
+            }
+          })
+          .then(data => {
+            this.todo = '',
+              this.gettodo()
+          })
+      },
+      deletetodo(idtodo) {
+        this.$http.delete(`/todo/list/${idtodo}`, {
+          headers: {
+            token: window.localStorage.getItem('token')
+          }
+        })
+          .then(data => {
+            this.gettodo()
+          })
+      },
+      deletetag(idtag) {
+        this.$http.delete(`/todo/tag/${idtag}`, {
+          headers: {
+            token: window.localStorage.getItem('token')
+          }
+        })
+          .then(data => {
+            this.gettodo()
+          })
+      },
+      logout() {
+        this.$router.push('/')
+        window.localStorage.clear()
+      }
     },
     created() {
       this.gettodo()

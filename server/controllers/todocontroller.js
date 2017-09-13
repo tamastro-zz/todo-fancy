@@ -76,20 +76,31 @@ exports.addtodo = (req, res, next) => {
 }
 
 exports.addtodototag = (req, res, next) => {
-  tag.tagModel.updateOne({
-    _id: req.body.id
-  }, {
-      $push: { todos: req.body.todos }
-    })
-    .then(data => {
-      res.send({
-        'data': data,
-        'message': 'data updated'
+  var token = req.headers.token
+  var decode = jwt.verify(token, process.env.SECRET)
+  console.log(req.params.id);
+  todos.listModel.create({
+    title: req.body.title,
+    created_at: new Date(),
+    status: false,
+    user: decode.id
+  })
+  .then(datatodo => {
+    tag.tagModel.updateOne({
+      _id: req.params.id
+    }, {
+        $push: { todos: datatodo._id }
       })
-    })
-    .catch(err => {
-      res.send(err)
-    })
+      .then(data => {
+        res.send({
+          'data': data,
+          'message': 'data updated'
+        })
+      })
+      .catch(err => {
+        res.send(err)
+      })
+  })
 }
 
 exports.updatetag = (req, res, next) => {
