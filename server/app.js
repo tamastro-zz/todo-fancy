@@ -6,6 +6,7 @@ const express = require('express'),
       cookieParser = require('cookie-parser'),
       bodyParser = require('body-parser'),
       cors = require('cors'),
+      mongoose = require('mongoose'),
 
       //All Route Files
       routes = require('./routes/index'),
@@ -18,6 +19,10 @@ const express = require('express'),
 
 //load environment variables with dotenv
 require('dotenv').config()
+
+
+
+mongoose.connect('mongodb://localhost:27017/to-do');
 
 app.use(logger('dev'));
 app.use(bodyParser.json());

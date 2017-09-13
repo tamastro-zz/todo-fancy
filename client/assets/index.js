@@ -1,7 +1,8 @@
 new Vue ({
   el: '#app',
   data: {
-    todolists: []
+    todolists: [],
+    modaladd: false
   },
   methods: {
     getlist() {
@@ -18,7 +19,10 @@ new Vue ({
       var words = ["red", "yellow", "teal", "orange", "blue", "green", "lime", 'grey', 'pink', 'purple', 'cyan', 'brown'];
       var word = words[Math.floor(Math.random() * words.length)];
       return word
-    }
+    },
+    // posttask() {
+    //   axios.post('')
+    // }
   },
   created: function() {
     this.getlist()
